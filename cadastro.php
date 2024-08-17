@@ -6,8 +6,9 @@
     <title>Cadastro de usuários</title>
 </head>
 <body>
+    <dialog id="avisos"></dialog>
     <h1>Cadastrar usuários</h1>
-    <form method="post" action="processa.php">
+    <form method="post" id="form_cadastro">
         <div>
             <label for="nome">Nome</label>
             <input type="text" name="nome" id="nome">
@@ -28,5 +29,7 @@
             <button type="submit">Cadastrar</button>
         </div>
     </form>
+
+    <script src="./cadastro.js"></script>
 </body>
 </html>

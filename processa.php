@@ -3,10 +3,12 @@
 include_once "conexao.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Adicionar Switch case
 
     $erro = "";
     $nome = $_POST['nome'];
+
+    $padraoSenha = '~(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\(\)\_\+\[\]\{\}\|\:\"\<\>\.\,\/\?\-]).{8,}$~';
+
     if (empty($nome) || strlen($nome) < 2) {
         $erro .= "Digite um nome <br>";
     }
@@ -22,9 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $erro .= "Email já cadastrado! <br>";
         }
     }
+    /* Verificação para formato de cpf */
+    $padraoCPF = '~^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$~';
     $cpf = $_POST['cpf'];
-    if (empty($cpf) || strlen($cpf) != 11) {
-        $erro .= "Digite o CPF com 11 digitos <br>";
+    if (!preg_match($padraoCPF, $cpf)) {
+        $erro .= "Digite o CPF nesse formato [000.000.000-00] <br>";
     } else {
         $selectCPF = $conexao->prepare("SELECT cpf FROM usuario WHERE cpf = :cpf");
         $selectCPF->bindParam('cpf', $cpf);
@@ -36,8 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 $senha = $_POST['senha'];
-if (empty($senha) || strlen($senha) < 8) {
-    $erro .= "[ERRO] Digite uma senha de no mínmo 8 caracteres <br>";
+
+if (!preg_match($padraoSenha, $senha)) {
+    $erro .= "[ERRO] Digite uma senha contendo no mínimo 8 caracteres, uma letra maíuscula, uma minuscula, caracter especial e um número. <br>";
 } else {
     $senhaCripto = password_hash($senha, PASSWORD_DEFAULT);
 }
